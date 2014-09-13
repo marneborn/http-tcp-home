@@ -115,7 +115,7 @@ function redirectTCP ( request, route, command ) {
     if ( route.query !== null )
         message += "?" + route.query;
 
-    return tcp.send(command.port, command.host, message, { timeout : 500 } );
+    return tcp.send(command.port, command.host, message);//, { timeout : 500 } );
 }
 
 var respondFuncs = [respondAttach, respondHtml];

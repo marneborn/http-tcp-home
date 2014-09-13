@@ -33,7 +33,7 @@ module.exports.send = function ( port, host, message, config ) {
 
     queue = queue.then(
         function () {
-            let nextHop  = new net.Socket();
+            let client   = new net.Socket();
             let deferred = Q.defer();
             let logs     = [];
             let string   = stringify(message);
@@ -45,26 +45,30 @@ module.exports.send = function ( port, host, message, config ) {
             // first send the number of characters to expect
             // then send the actual data
             // then close the connection
-            nextHop.connect( port, host, function () {
+            client.connect( port, host, function () {
                 logs.push("Sending: "+string);
-                nextHop.end    ( string );
+                client.end( string );
                 deferred.resolve(logs);
             });
 
-            nextHop.on('error', function ( err ) {
-                logs.push("TCPNextHop emitted an error: "+err);
-                nextHop.end();
+            client.on('error', function ( err ) {
+                logs.push("TCP Client emitted an error: "+err);
+                client.end();
                 deferred.reject(logs);
             });
 
             if ( config.timeout != null ) {
-                nextHop.setTimeout(500);
+                client.setTimeout(config.timeout);
             }
 
-            nextHop.on('timeout', function () {
-                logs.push("TCPNextHop timed out");
-                nextHop.end();
+            client.on('timeout', function () {
+                logs.push("TCP Client timed out");
+                client.end();
                 deferred.reject(logs);
+            });
+
+            client.on('data', function ( data ) {
+                console.log("Got back: "+data)
             });
 
             return deferred.promise;
@@ -75,7 +79,10 @@ module.exports.send = function ( port, host, message, config ) {
 
 module.exports.createServer = function ( port, callback, errback ) {
     let server = net.createServer();
-    server.on('connection', function ( socket ) { return receive(socket, callback, errback); });
+    server.on('connection', function ( socket ) { 
+        console.log(">> "+socket.remoteAddress+":"+socket.remotePort);
+        return receive(socket, callback, errback); 
+    });
     server.listen(port);
     return server;
 };
@@ -90,6 +97,6 @@ function receive ( socket, callback, errback ) {
     });
     
     socket.on('close', function(data) {
-        callback(buffer);
+        callback(socket, buffer);
     });
 }

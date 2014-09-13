@@ -16,15 +16,16 @@ let message2cmd = {
 tcp
 .createServer( config.home.port, callback, errback )
 .on('error', function ( err ) { console.log("Error: "+err); } )
-
+.on('connection', function () { console.log('connected'); });
 console.log('listening to port '+config.home.port);
 
-function callback ( message ) {
+function callback ( returnSocket, message ) {
     message = message.trim();
+    console.log('sending> '+message+'->'+message2cmd[message]);
     denon.send(message2cmd[message]);
 }
 
-function errback ( message, code ) {
+function errback ( returnSocket, message, code ) {
     console.log("Problem with message: ("+code+") - "+message);
 }
 
