@@ -1,23 +1,22 @@
 'use strict';
 
 let Q      = require('q');
-let fs     = require('fs');
 let denon  = require('./denon.js');
 let utils  = require('../common/utils');
 let tcp    = require('../common/tcp');
 let config = require('../config.json');
 
-denon.init( { host : config.denonIP, port : config.denonPort } );
+denon.init( { host : config.denon.IP, port : config.denon.port } );
 
 let message2cmd = {
     'muteoff' : 'MUOFF',
     'muteon'  : 'MUON'
 };
 
-tcp.createServer( config.localPort, callback, errback )
-.on('connection', function ( socket ) {
-    console.log('connected to: '+socket.remoteAddress+':'+socket.remotePort);
-})
+tcp
+.createServer( config.localPort, callback, errback )
+.on('error', function ( err ) { console.log("Error: "+err); } )
+
 console.log('listening to port '+config.localPort);
 
 function callback ( message ) {

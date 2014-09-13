@@ -26,13 +26,11 @@ function init ( config ) {
  */
 function startQueue () {
     if ( started ) return;
-    console.log('denon - starting queue');
     socket.connect(port, host);
     started = true;
     
     // set a timeout to cancel the request if it takes too long to connect.
     var cantConnect = setTimeout(function () {
-	console.log("denon - Can't connect to the receiver");
 	stopQueue();
     }, resTLimit );
     
@@ -45,7 +43,6 @@ function startQueue () {
 }
 
 function stopQueue () {
-    console.log('denon - stopping queue');
     socket.end();
     socket.destroy();
     started = false;
@@ -62,7 +59,6 @@ function sendNext () {
     
     // send the oldest cmd
     var cObj = queue.shift();
-    console.log('denon - sending '+cObj.cmd);
     socket.write(cObj.cmd+"\r", "utf-8");
     
     // if there is a callback, wait for it to complete before sending the next cmd.
@@ -78,7 +74,6 @@ function sendNext () {
         
 	takingTooLong = setTimeout(
 	    function () {
-		console.log('denon - took too long to get a response for: '+cObj.cmd);
 		socket.removeListener('data', fn );
 		sendNext();
 	    },

@@ -27,12 +27,13 @@ function stringify ( message ) {
 // keep a queue of promises to try to keep sends in order at the server.
 let queue = Q(true);
 
-module.exports.send = function ( port, host, message ) {
+module.exports.send = function ( port, host, message, config ) {
+
+    config = config || {};
 
     queue = queue.then(
         function () {
-            let client   = new net.Socket();
-
+            let nextHop  = new net.Socket();
             let deferred = Q.defer();
             let logs     = [];
             let string   = stringify(message);
@@ -44,15 +45,25 @@ module.exports.send = function ( port, host, message ) {
             // first send the number of characters to expect
             // then send the actual data
             // then close the connection
-            client.connect( port, host, function () {
+            nextHop.connect( port, host, function () {
                 logs.push("Sending: "+string);
-                client.end    ( string );
+                nextHop.end    ( string );
                 deferred.resolve(logs);
             });
 
-            client.on('error', function ( err ) {
-                logs.push("TCPClient emitted an error: "+err);
-                console.log("-E- "+logs[logs.length-1]);
+            nextHop.on('error', function ( err ) {
+                logs.push("TCPNextHop emitted an error: "+err);
+                nextHop.end();
+                deferred.reject(logs);
+            });
+
+            if ( config.timeout != null ) {
+                nextHop.setTimeout(500);
+            }
+
+            nextHop.on('timeout', function () {
+                logs.push("TCPNextHop timed out");
+                nextHop.end();
                 deferred.reject(logs);
             });
 
