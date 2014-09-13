@@ -1,0 +1,26 @@
+{
+  "name": "http-tcp-home",
+  "version": "0.0.1",
+  "description": "middle ware that takes html requests and translates them to tcp requests to my home controller",
+  "scripts": {
+    "start-external-mock": "node --harmony external/redirect.js",
+    "start-home": "node --harmony local/controlHome.js"
+  },
+  "dependencies": {
+    "q": "^1.0.1"
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
+  "keywords": [
+    "node",
+    "ifttt",
+    "tcp",
+    "redirect"
+  ],
+  "author": "Mikael Arneborn",
+  "contributors": [
+    "mikael@arneborn.net"
+  ],
+  "license": "MIT"
+}
