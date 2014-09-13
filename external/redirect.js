@@ -13,8 +13,6 @@ const R = module.exports.R = {
     NOK      :  1,
     BAD_PATH :  2,
 };
-console.log("hello world");
-process.exit();
 
 let port   = Number(process.env.PORT || config.localHerokuPort);
 let server = http
@@ -26,7 +24,7 @@ let server = http
 
 function handleRequest ( request, response ) {
 
-    //console.log("request from: "+request.connection.remoteAddress+':'+request.connection.remotePort+' - '+request.url);
+    console.log("request from: "+request.connection.remoteAddress+':'+request.connection.remotePort+' - '+request.url);
 
     let routeStr = url.parse (request.url).pathname;
     let route    = parseRoute  (routeStr);
