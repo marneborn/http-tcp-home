@@ -25,7 +25,6 @@ let server = http
 function handleRequest ( request, response ) {
 
     console.log("request from: "+request.connection.remoteAddress+':'+request.connection.remotePort+' - '+request.url);
-
     let routeStr = url.parse (request.url).pathname;
     let route    = parseRoute  (routeStr);
     let command  = cmdDB.get(route.path);
