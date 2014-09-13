@@ -24,7 +24,7 @@ let server = http
 
 function handleRequest ( request, response ) {
 
-    console.log("request from: "+request.connection.remoteAddress+':'+request.connection.remotePort+' - '+request.url);
+    //console.log("request from: "+request.connection.remoteAddress+':'+request.connection.remotePort+' - '+request.url);
 
     let routeStr = url.parse (request.url).pathname;
     let route    = parseRoute  (routeStr);
@@ -72,7 +72,7 @@ function parseRoute ( routeStr ) {
     let slash = routeStr.indexOf('/');
     if ( slash < 0 ) slash = routeStr.length;
     if ( routeStr.substring(0,slash) === 'getlogfile' ) {
-        route.returnA = 'logfile';
+        route.returnA = 'attach';
         routeStr = routeStr.substring(slash+1);
     }
 
@@ -82,6 +82,10 @@ function parseRoute ( routeStr ) {
         route.query = routeStr.substring(qst+1);
         routeStr    = routeStr.substring(0,qst);
     }
+
+    // default is to return an html file
+    if ( route.returnA === null )
+        route.returnA = 'html';
 
     // whatever is left is the thing to lookup in the DB.
     route.path = routeStr;
@@ -126,7 +130,7 @@ function respond ( route, response, status ) {
 
 function respondAttach ( route, response, status ) {
 
-    if ( route.returnA !== "logfile" )
+    if ( route.returnA !== "attach" )
         return null;
 
     var filename = "redirect.log";
@@ -145,7 +149,6 @@ function respondHtml ( route, response, status ) {
 
     response.writeHead(200, {
         'Content-Type'        : 'text/html',
-        'Content-Disposition' : 'attachment; filename="'+filename+'"'
     });
     response.write("<html>");
     response.write("<head></head>");

@@ -1,8 +1,12 @@
 {
     "denon"           : {
-        "IP"   : "10.0.0.104",
-        "port" : 23
+        "address" : "10.0.0.104",
+        "port"    : 23
     },
     "localPort"       : 2412,
-    "localHerokuPort" : 5000
+    "localHerokuPort" : 5000,
+    "home" : {
+        "address" : "98.234.105.202",
+        "port"    : 2412
+    }
 }

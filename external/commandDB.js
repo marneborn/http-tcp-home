@@ -3,8 +3,8 @@
 let config  = require('../config.json');
 
 let localDB = {
-    "14154073323/muteoff" : { method : "TCP", host : "98.234.105.202", port : config.localPort, message : "muteoff" },
-    "14154073323/muteon"  : { method : "TCP", host : "98.234.105.202", port : config.localPort, message : "muteon"  }
+    "14154073323/muteoff" : { method : "TCP", host : config.home.address, port : config.home.port, message : "muteoff" },
+    "14154073323/muteon"  : { method : "TCP", host : config.home.address, port : config.home.port, message : "muteon"  }
 };
 
 module.exports.get = function ( lookup ) {

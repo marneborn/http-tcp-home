@@ -6,7 +6,7 @@ let utils  = require('../common/utils');
 let tcp    = require('../common/tcp');
 let config = require('../config.json');
 
-denon.init( { host : config.denon.IP, port : config.denon.port } );
+denon.init( { host : config.denon.address, port : config.denon.port } );
 
 let message2cmd = {
     'muteoff' : 'MUOFF',
@@ -14,10 +14,10 @@ let message2cmd = {
 };
 
 tcp
-.createServer( config.localPort, callback, errback )
+.createServer( config.home.port, callback, errback )
 .on('error', function ( err ) { console.log("Error: "+err); } )
 
-console.log('listening to port '+config.localPort);
+console.log('listening to port '+config.home.port);
 
 function callback ( message ) {
     message = message.trim();
