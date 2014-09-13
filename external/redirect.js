@@ -14,6 +14,8 @@ const R = module.exports.R = {
     BAD_PATH :  2,
 };
 
+console.log("Starting...");
+
 let port   = Number(process.env.PORT || config.localHerokuPort);
 let server = http
         .createServer()
